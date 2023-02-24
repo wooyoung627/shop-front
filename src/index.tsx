@@ -25,3 +25,7 @@ reportWebVitals();
 // 1. https://redux.js.org/tutorials/typescript-quick-start
 // 2. index.tsx에 Provider 설정
 // 3. user 테스트
+
+
+// TEMPLATE
+// https://mui.com/premium-themes/onepirate/sign-up/
