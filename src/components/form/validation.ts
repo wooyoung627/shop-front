@@ -14,6 +14,14 @@ export function email(value: string) {
   return value && !isEmail(value.trim()) ? 'Invalid email' : null;
 }
 
+function isId(string: string) {
+  return string.length > 4;
+}
+
+export function id(value: string) {
+  return value && !isId(value.trim()) ? 'Id is too short' : null;
+}
+
 function isDirty(value: string | number) {
   return value || value === 0;
 }

@@ -1,7 +1,7 @@
-const enum UserRole {
+const enum Authority {
     admin = "ADMIN",
     user = "USER",
     unAuth = "UN_AUTH"
 }
 
-export default UserRole;
+export default Authority;

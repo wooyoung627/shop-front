@@ -6,31 +6,90 @@ import Typography from '../../components/common/Typography';
 import AppFooter from '../layout/AppFooter';
 import AppAppBar from '../layout/AppAppBar';
 import AppForm from '../layout/AppForm';
-import { email, required } from '../../components/form/validation';
+import { id, required } from '../../components/form/validation';
 import RFTextField from '../../components/form/RFTextField';
 import FormButton from '../../components/form/FormButton';
 import FormFeedback from '../../components/form/FormFeedback';
 import withRoot from '../../components/withRoot';
+import { axiosApi } from '../../components/api/axiosApi';
+import { Button } from '@mui/material';
+import { useAppDispatch } from '../../app/hook';
+import { setUserReducer, User } from '../../reducers/userReducer';
+import Authority from '../../const/Authority';
+
+interface SignForm {
+  id: string;
+  password: string;
+}
+
+interface LoginResult extends User {
+  result : boolean;
+}
 
 function SignIn() {
   const [sent, setSent] = React.useState(false);
 
-  const validate = (values: { [index: string]: string }) => {
-    const errors = required(['email', 'password'], values);
+  const dispatch = useAppDispatch();
 
-    if (!errors.email) {
-      const emailError = email(values.email);
-      if (emailError) {
-        errors.email = emailError;
+  // const validate = (values: { [index: string]: string }) => {
+  //   const errors = required(['email', 'password'], values);
+
+  //   if (!errors.email) {
+  //     const emailError = email(values.email);
+  //     if (emailError) {
+  //       errors.email = emailError;
+  //     }
+  //   }
+
+  //   return errors;
+  // };
+
+  const validate = (values: { [index: string]: string }) => {
+    const errors = required(['id', 'password'], values);
+
+    if (!errors.id) {
+      const idError = id(values.id);
+      if (idError) {
+        errors.id = idError;
       }
     }
 
     return errors;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setSent(true);
+    let form = new FormData();
+    form.set('userId', 'user');
+    form.set('password', '1234');
+    const res = await axiosApi.post('/login', form);
+
+    let loginResult : LoginResult = res.data;
+    if(loginResult.result){
+      console.log(loginResult)
+      // dispatch(setUserReducer(loginResult));
+    }else{
+      setSent(false);
+    }
   };
+
+  const get = async () => {
+    console.log("GET SEND");
+    const res = await axiosApi.get('/');
+    console.log(res.data);
+  }
+
+  const param = async () => {
+    console.log("GET SEND");
+    const res = await axiosApi.get('/param?userId=test');
+    console.log(res.data);
+  }
+
+  const post = async () => {
+    console.log("POST SEND");
+    const res = await axiosApi.post('/', {'test':'1234'});
+    console.log(res.data);
+  }
 
   return (
     <React.Fragment>
@@ -59,14 +118,14 @@ function SignIn() {
           {({ handleSubmit: handleSubmit2, submitting }) => (
             <Box component="form" onSubmit={handleSubmit2} noValidate sx={{ mt: 6 }}>
               <Field
-                autoComplete="email"
+                autoComplete="id"
                 autoFocus
                 component={RFTextField}
                 disabled={submitting || sent}
                 fullWidth
-                label="Email"
+                label="Id"
                 margin="normal"
-                name="email"
+                name="id"
                 required
                 size="large"
               />
@@ -109,6 +168,10 @@ function SignIn() {
           </Link>
         </Typography>
       </AppForm>
+      <Button onClick={handleSubmit}>{'CLICK'}</Button>
+      <Button onClick={get}>{'GET'}</Button>
+      <Button onClick={param}>{'PARAM'}</Button>
+      <Button onClick={post}>{'POST'}</Button>
       <AppFooter />
     </React.Fragment>
   );
